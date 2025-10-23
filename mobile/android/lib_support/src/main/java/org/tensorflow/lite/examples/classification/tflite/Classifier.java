@@ -207,8 +207,14 @@ public abstract class Classifier {
         tfliteOptions.addDelegate(nnApiDelegate);
         break;
       case GPU:
-        gpuDelegate = new GpuDelegate();
-        tfliteOptions.addDelegate(gpuDelegate);
+        try {
+          gpuDelegate = new GpuDelegate();
+          tfliteOptions.addDelegate(gpuDelegate);
+          Log.d(TAG, "GPU delegate created successfully");
+        } catch (Exception e) {
+          Log.w(TAG, "Failed to create GPU delegate, falling back to CPU: " + e.getMessage());
+          gpuDelegate = null;
+        }
         break;
       case CPU:
         break;

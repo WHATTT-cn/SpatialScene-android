@@ -102,17 +102,17 @@ public class ClassifierActivity extends CameraActivity implements OnImageAvailab
     rgbFrameBitmap.setPixels(getRgbBytes(), 0, previewWidth, 0, 0, previewWidth, previewHeight);
     final int cropSize = Math.min(previewWidth, previewHeight);
 
-    runInBackground(
-        new Runnable() {
-          @Override
-          public void run() {
-            if (classifier != null) {
-              final long startTime = SystemClock.uptimeMillis();
-              //final List<Classifier.Recognition> results =
-              //    classifier.recognizeImage(rgbFrameBitmap, sensorOrientation);
-              final List<Classifier.Recognition> results = new ArrayList<>();
+    // GPU delegate must run on the same thread where it was initialized
+    final Runnable inferenceRunnable = new Runnable() {
+      @Override
+      public void run() {
+        if (classifier != null) {
+          final long startTime = SystemClock.uptimeMillis();
+          //final List<Classifier.Recognition> results =
+          //    classifier.recognizeImage(rgbFrameBitmap, sensorOrientation);
+          final List<Classifier.Recognition> results = new ArrayList<>();
 
-              float[] img_array = classifier.recognizeImage(rgbFrameBitmap, sensorOrientation);
+          float[] img_array = classifier.recognizeImage(rgbFrameBitmap, sensorOrientation);
 
 
               /*
@@ -188,7 +188,14 @@ public class ClassifierActivity extends CameraActivity implements OnImageAvailab
             }
             readyForNextImage();
           }
-        });
+        };
+    
+    // Run on main thread for GPU, background thread for CPU/NNAPI
+    if (getDevice() == Device.GPU) {
+      runOnUiThread(inferenceRunnable);
+    } else {
+      runInBackground(inferenceRunnable);
+    }
   }
 
   @Override
@@ -200,7 +207,13 @@ public class ClassifierActivity extends CameraActivity implements OnImageAvailab
     final Device device = getDevice();
     final Model model = getModel();
     final int numThreads = getNumThreads();
-    runInBackground(() -> recreateClassifier(model, device, numThreads));
+    
+    // GPU delegate must be created on the main thread
+    if (device == Device.GPU) {
+      recreateClassifier(model, device, numThreads);
+    } else {
+      runInBackground(() -> recreateClassifier(model, device, numThreads));
+    }
   }
 
   private void recreateClassifier(Model model, Device device, int numThreads) {
