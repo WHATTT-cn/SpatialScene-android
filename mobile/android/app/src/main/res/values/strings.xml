@@ -3,6 +3,16 @@
     <string name="tfe_ic_camera_error" translation_description="Error regarding camera support[CHAR_LIMIT=40]">This device doesn\'t support Camera2 API.</string>
     <string name="tfe_ic_gpu_quant_error" translation_description="Error regarding GPU support for Quant models[CHAR_LIMIT=60]">GPU does not yet supported quantized models.</string>
     <string name="tfe_ic_model" translatable="false">Model:</string>
+    
+    <string name="tfe_ic_select_image">选择图片</string>
+    <string name="tfe_ic_process_image">开始处理</string>
+    <string name="tfe_ic_processing">正在处理...</string>
+    <string name="tfe_ic_completed">处理完成</string>
+    <string name="tfe_ic_failed">处理失败</string>
+    <string name="tfe_ic_original_image">原始图片</string>
+    <string name="tfe_ic_depth_result">深度估计结果</string>
+    <string name="tfe_ic_inference_time">推理时间</string>
+    
     <string-array name="tfe_ic_models" translatable="false">
         <item>Float_EfficientNet</item>
 <!--

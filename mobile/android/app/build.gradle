@@ -32,10 +32,14 @@ android {
        // The TFLite inference is built using the TFLite Support library.
        support {
            dimension "tfliteInference"
+           // 添加不同的applicationIdSuffix，避免两个flavor同时安装时产生重复图标
+           applicationIdSuffix ".support"
        }
        // The TFLite inference is built using the TFLite Task library.
        taskApi {
            dimension "tfliteInference"
+           // 添加不同的applicationIdSuffix，避免两个flavor同时安装时产生重复图标
+           applicationIdSuffix ".taskapi"
        }
    }
 
@@ -48,6 +52,9 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.0.0'
     implementation 'androidx.coordinatorlayout:coordinatorlayout:1.0.0'
     implementation 'com.google.android.material:material:1.0.0'
+    // 添加图片处理相关依赖
+    implementation 'androidx.exifinterface:exifinterface:1.3.3'
+    implementation 'com.github.bumptech.glide:glide:4.12.0'
 
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'com.google.truth:truth:1.0.1'
